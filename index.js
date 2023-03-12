@@ -3,19 +3,22 @@ const multer = require("multer");
 const puppeteer = require("puppeteer");
 const app = express();
 const formObj = multer();
+var LocalStorage = require('node-localstorage').LocalStorage;
+localStorage = new LocalStorage('data');
+localStorage.setItem('myFirstKey', 'myFirstValue');
+console.log("wtf",localStorage.getItem('myFirstKey'));
 
 app.use(express.static("dist"));
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 app.post("/post-meetup-details",formObj.none(), (req, res) => {
-	console.log(req.body.emailId)
-	app.locals.email = req.body.emailId;
-	app.locals.password = req.body.pwd;
-	app.locals.firstname = req.body.fname;
-	app.locals.lastname = req.body.lname;
-	app.locals.role = req.body.role;
-	app.locals.orgname = req.body.orgName;
+	localStorage.setItem("email",req.body.emailId)
+	localStorage.setItem("password",req.body.pwd);
+	localStorage.setItem("firstname",req.body.fname)
+	localStorage.setItem("lastname",req.body.lname)
+	localStorage.setItem("role",req.body.role)
+	localStorage.setItem("orgname",req.body.orgName)
 	if(req.body.all){
     let groupURL = JSON.parse(req.body.eventURL)
     console.log({groupURL})
@@ -36,7 +39,7 @@ async function run(inpEmail, inpPassword, inpFirstname, inpLastname, inpRole, in
     inpOrgname,
   ];
   console.log({all})
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
   let eventURL = []; //groupURL
   await page.goto("https://meetup.com/login");

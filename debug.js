@@ -1,4 +1,5 @@
 const puppeteer = require("puppeteer");
+
 let [email, password, firstname, lastname, role, orgname] = [
     "chidam3abi@gmail.com",
     "3chidamnathan#",
@@ -8,7 +9,7 @@ let [email, password, firstname, lastname, role, orgname] = [
     "sastra_uni",
 ];
 const fun = async()=>{
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
     // Go to the login page
