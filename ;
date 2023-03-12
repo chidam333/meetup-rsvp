@@ -1,2 +1,0 @@
-[boot]
-command = "/home/chidam/.nvm/versions/node/v19.7.0/bin/node /home/chidam/meetupRSVP/index.js";
