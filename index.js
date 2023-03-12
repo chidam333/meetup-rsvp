@@ -3,10 +3,10 @@ const multer = require("multer");
 const puppeteer = require("puppeteer");
 const app = express();
 const formObj = multer();
+const cron = require('node-cron');
+
 var LocalStorage = require('node-localstorage').LocalStorage;
-localStorage = new LocalStorage('data');
-localStorage.setItem('myFirstKey', 'myFirstValue');
-console.log("wtf",localStorage.getItem('myFirstKey'));
+localStorage = new LocalStorage('./data');
 
 app.use(express.static("dist"));
 app.get("/", (req, res) => {
@@ -19,7 +19,9 @@ app.post("/post-meetup-details",formObj.none(), (req, res) => {
 	localStorage.setItem("lastname",req.body.lname)
 	localStorage.setItem("role",req.body.role)
 	localStorage.setItem("orgname",req.body.orgName)
-	if(req.body.all){
+  localStorage.setItem("all",req.body.all)
+  localStorage.setItem("eventURL",req.body.eventURL)
+	if(req.body.all=="false"){
     let groupURL = JSON.parse(req.body.eventURL)
     console.log({groupURL})
     run(req.body.emailId,req.body.pwd,req.body.fname,req.body.lname,req.body.role,req.body.orgName,false,groupURL)
@@ -29,6 +31,17 @@ app.post("/post-meetup-details",formObj.none(), (req, res) => {
 	}
 	console.log(app.locals)
 });
+
+cron.schedule("0 0 * * * *",()=>{
+  console.log("hello")
+  if(localStorage.getItem("all")=="false"){
+    let groupURL = JSON.parse(localStorage.getItem("eventURL"))
+    console.log({groupURL})
+    run(localStorage.getItem("email"),localStorage.getItem("password"),localStorage.getItem("firstname"),localStorage.getItem("lastname"),localStorage.getItem("role"),localStorage.getItem("orgname"),false,groupURL)
+  }else{
+    run(localStorage.getItem("email"),localStorage.getItem("password"),localStorage.getItem("firstname"),localStorage.getItem("lastname"),localStorage.getItem("role"),localStorage.getItem("orgname"),false,[])
+  }
+})
 async function run(inpEmail, inpPassword, inpFirstname, inpLastname, inpRole, inpOrgname, all, hrefs) {
   let [email, password, firstname, lastname, role, orgname] = [
     inpEmail,

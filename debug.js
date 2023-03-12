@@ -12,15 +12,14 @@ const fun = async()=>{
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    // Go to the login page
     await page.goto("https://meetup.com/login");
-
-    // Enter the username and password
     await page.type("#email", email);
     await page.type("#current-password", password);
     await page.click(".p14rljdx");
+    
     await page.waitForNavigation();
     await page.waitForTimeout(3000);
+    
     await page.goto("https://www.meetup.com/your-events/");
     await page.waitForNavigation();
     await page.waitForTimeout(3000);
@@ -39,10 +38,5 @@ const fun = async()=>{
         await page.click('[data-event-label="edit-rsvp-modal-not-going"]')
     }
     browser.close()
-    // await page.waitForSelector('[data-testid="attend-online-btn"]', {
-    //     timeout: 10000,
-    // });
-    // await page.click('[data-testid="attend-online-btn"]');
-    // await page.click('[data-event-label="event-question-modal-confirm"]');
 }
 fun();
